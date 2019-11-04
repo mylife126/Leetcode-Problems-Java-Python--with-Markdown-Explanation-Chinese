@@ -3054,3 +3054,167 @@ class Solution {
 }
 ```
 
+## 784. Letter Case Permutation
+Given a string S, we can transform every letter individually to be lowercase or uppercase to create another string.  Return a list of all possible strings we could create. 
+
+重点是： 我们的String是immutable的，所以为了操作需要变成chararray， 然后在append去ans的时候做一个charArray到string的操作 ``new String(charArray) `` 除此之外如果用之前的套路 for 循环在广度上做遍历，会出现一个重复的问题。所以我们可以直接call 函数，在当前为ltter的时候做一次permutation，然后递归，再bt， 然后呢bt后 其实我们返回到了同一层，这个时候再在非letter的情况下又call一次permutation， 就可以在同一层级以同一个pivot传入下一层递归，但是传入的charArray一个是upper的 另一个是 lower的
+
+```
+Examples:
+Input: S = "a1b2"
+Output: ["a1b2", "a1B2", "A1b2", "A1B2"]
+
+Input: S = "3z4"
+Output: ["3z4", "3Z4"]
+
+Input: S = "12345"
+Output: ["12345"]
+```
+
+```java
+class Solution {
+    public List<String> letterCasePermutation(String S) {
+        List<String> ans = new ArrayList<>();
+        if (S == null || S.length() == 0){
+            return ans;
+        }
+        char[] chars = S.toCharArray();
+        bt(chars,0, ans);
+        return ans;
+    }
+    
+    private void bt(char[] chars, int index, List<String> ans){
+        if (index == chars.length){
+            String returning = new String(chars);
+            ans.add(returning);
+        } else {
+            //如果此刻是一个letter 那么我们需要permutation
+            if (Character.isLetter(chars[index])){
+                chars[index] = Character.toUpperCase(chars[index]);
+                //例子： 传入了 [A1B2], 现在pointer在2
+                bt(chars, index + 1, ans);
+                //当这一层返回后，复原这一层被改变的
+                chars[index] = Character.toLowerCase(chars[index]);
+            }
+            //那么此刻如果这一层后面还有， 且是数字的， 那么我们再进行一次深度查找，但此刻需要注意的是
+            //尽管我们再对同一个pivot做了深度，此数位上的这个元素再上面if里的被upper又lower回来了，所以
+            //char array里的元素是不同的
+            //传入了[A1b2],pinter还是在2
+            bt(chars, index + 1, ans);
+        }
+    }
+}
+```
+
+# November 4th New problem BackTrack
+## 52. NQueenII
+在一个n by n的棋盘上面放nQueen 问有多少个摆法使得这些queens不会打架。 要求是 每一个row， 每一个列， 每一个对角线都只有一个Queen。 那么思想很直接，那就是递归的时候，每次对下一行做处理，这就保证了row之间不存在重复，然后呢每一列我们用hash来判断这一列是否出现过，对角线来看， 从左上往右下走， j - i 是相同的， 从右上往左下走呢， i + j是相同的，所以我们还需要每一层记录一次这一层的 ijsum 和 jideduction， 那么在下一层就可以判断是否出现过了
+
+```
+Input: 4
+Output: 2
+Explanation: There are two distinct solutions to the 4-queens puzzle as shown below.
+[
+ [".Q..",  // Solution 1
+  "...Q",
+  "Q...",
+  "..Q."],
+
+ ["..Q.",  // Solution 2
+  "Q...",
+  "...Q",
+  ".Q.."]
+]
+```
+
+**以下实现存在一定bug，原因是只判断了是否与上一刻的sum 和 deduction的差别，而不是全局判断。 所以不该用stack 而是 hash来记录summation 和 deduction**
+
+```java
+class Solution {
+    public int ans = 0;
+    public int totalNQueens(int n) {
+        if (n <= 0){
+            return ans;
+        }
+        
+        Set<Integer> colSeen = new HashSet<Integer>();
+        Stack<Integer> summation = new Stack<Integer>();
+        Stack<Integer> deduction = new Stack<Integer>();
+        int rowIndex = 0; //用来记录下一次去哪一行
+        int colIndex = 0;//用来记录上一刻在哪一列，以便于这一层判断我现在的j是往左还是往右
+        bt(n, colSeen, summation, deduction, rowIndex, colIndex);
+        return ans;
+    }
+    private void bt(int n, Set<Integer> colSeen, Stack<Integer> summation, Stack<Integer> deduction, int rowIndex, int colIndex){
+        if (rowIndex == n){
+            System.out.println("here");
+            ans += 1;
+            return;
+            // return true;
+        }
+        //开始遍历列
+        for (int j = 0; j < n; j++){
+            if (!colSeen.contains(j)){
+                int currentSum = j + rowIndex;
+                int currentDeduction = j - rowIndex;
+                //如果我们现在往右边走，那就得判断是否此刻的差等同于上一刻的差
+                if (!summation.isEmpty() && j > colIndex && currentDeduction == deduction.peek()) continue;
+                //如果我们现在往左走，那就得判断是否此刻的和等同于上一刻的和
+                if (!deduction.isEmpty() && j < colIndex && currentSum == summation.peek()) continue;
+                //如果上面的判断都可以了，那说明这一刻走的路子是对的
+                //将其这一列放入hash里
+                colSeen.add(j);
+                //同样需要记录这一刻的 col + row 和 col - row
+                summation.add(currentSum);
+                deduction.add(currentDeduction);
+                bt(n, colSeen, summation, deduction, rowIndex + 1, j);
+                colSeen.remove(j);
+                summation.pop();
+                deduction.pop();   
+            }
+        }
+    }
+}
+```
+
+那其实最好的实现是直接每次for 循环的时候判断三个hash里是否有重复的出现，如果没有说明这一步走对了。
+
+```java
+class Solution {
+    private int ans = 0;
+    public int totalNQueens(int n) {
+        if (n <= 0){
+            return ans;
+        }
+        Set<Integer> colSeen = new HashSet<>();
+        Set<Integer> sumSeen = new HashSet<>();
+        Set<Integer> deductionSeen = new HashSet<>();
+        int rowIndex = 0;
+        bt(n, colSeen, sumSeen, deductionSeen, rowIndex);
+        return ans;
+     }
+    
+    private void bt(int n, Set<Integer> colSeen, Set<Integer> sumSeen, Set<Integer> deductionSeen, int rowIndex){
+        if (rowIndex == n){
+            ans++;
+            return;
+        }
+        //对每一个col开始进行遍历，且start == 0， 因为每一层都有相同的combinations
+        for (int j = 0; j < n; j++){
+            int currentSum = j + rowIndex;
+            int currentDeduction = j - rowIndex;
+            if (!colSeen.contains(j) && !sumSeen.contains(currentSum) && !deductionSeen.contains(currentDeduction)){
+                //meaning this is a valid move
+                colSeen.add(j);
+                sumSeen.add(currentSum);
+                deductionSeen.add(currentDeduction);
+                bt(n, colSeen, sumSeen, deductionSeen, rowIndex + 1);
+                colSeen.remove(j);
+                sumSeen.remove(currentSum);
+                deductionSeen.remove(currentDeduction);
+            }
+        }
+    }
+}
+```
+
