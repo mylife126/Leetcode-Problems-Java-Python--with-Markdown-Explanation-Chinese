@@ -1,4 +1,8 @@
 /*
+Input: "Hello World"
+Output: 5
+返回的是最后的单词 world的长度
+
 因为需要找到最后一个单词的长度，所以用stack来存贮这个string里所有的char，然后从后往前的pop，每次pop就检查一下之后的char是不是空格，如果是的话说明最后这个词结束了。
 
 但是要避免cornercase：
