@@ -15,8 +15,6 @@ ans    value    power
 2      256       1     power == 1   ->  return ans *= value
 
 */
-
-
 class Solution {
     public double myPow(double x, int n) {
         if (n == 0){

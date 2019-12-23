@@ -1,5 +1,6 @@
 /*
-扫一次字符串，如果遇到左括号就放入stack， 如果是右括号， 有两个情况：1. stack空，则说明没法成为pair，忽略 2. stack 不为空 则stack pop出一次左括号，并且count +=1
+扫一次字符串，如果遇到左括号就放入stack， 如果是右括号， 有两个情况：1. stack空，则说明没法成为pair，忽略 2. stack 不为空 
+则stack pop出一次左括号，并且count +=1
 
 但这个问题在于只是找到了有几个合法的括号，而不是最长的字串里包含合法括号。 因为这个算法没法判断连续性这个问题 
 
@@ -41,8 +42,10 @@ class Solution {
 /*
 (()()) ()) ()
 可见上面最长的长度为六的字串。
-需要init一个leftMost的变量，这个变量为-1， 因为我们要的是长度，且这个长度一定是2的倍数，（（）（））当5 - (-1)时 为6，相当于补了一位。
-那么我们需要用一个stack来记录每一刻 '('的index，每当遇到了')'表示找到了一个pair， 那么就pop最近的那个'('，然后我们目的是要找最长字串，所以不是用当下的indx 减去 pop出来的那个indx，而是减去stack里剩下的最上面那个index。
+需要init一个leftMost的变量，这个变量为-1， 因为我们要的是长度，且这个长度一定是2的倍数，（（）（））当5 - (-1)时 为6，
+相当于补了一位。
+那么我们需要用一个stack来记录每一刻 '('的index，每当遇到了')'表示找到了一个pair， 
+那么就pop最近的那个'('，然后我们目的是要找最长字串，所以不是用当下的indx 减去 pop出来的那个indx，而是减去stack里剩下的最上面那个index。
 
 但是当我们扫到了 ')' 且stack为空，说明中断了， leftmost需要被更新至此时的位置
 
@@ -75,7 +78,6 @@ public class Solution {
                 //record every ('s location
                 stack.push(i);
             }
-            
             if (!stack.isEmpty() && current == ')'){//case 1, we have found one pair
                 //pop this )'s ( location as we actually need 这位)对应的(的前一位(的位置，这样又是相当于补了一位
                 stack.pop();
