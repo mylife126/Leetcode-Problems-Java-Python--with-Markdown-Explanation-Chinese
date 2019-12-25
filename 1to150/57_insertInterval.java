@@ -1,10 +1,15 @@
 /*
-和mergeinterval一样，现在我们将原来数组重新sort，按照starting来。 然后我们要linear search到数组中哪一项的ending > newIntervalStarting
+和mergeinterval一样，现在我们将原来数组重新sort，按照starting来。 然后我们要linear search到数组中找到一项：
+newIntervalEnding >= starting 且 newIntervalEnding <= ending， 表示我们找到了可以插入的地方。 然后需要改写此刻的
+starting和runningEnd， 因为新的interval可能有一个更小的start 或者 更大的end
+
+找到了可以插入的interval后，就可能存在可以merge的情况，那就开始mergeInterval即可。
+
 同时保留runningEnd，然后其余的就是merge intervals
                    [[1,2],[3,5],[6,7],[8,10],[12,16]]
           idx      newStart     newEnd      last          result          runningEnd      
           0          4           8         [1,2]           [1,2]                2
-          1          4           8         [3,5]           [3,8]                8  find one insert place -> merge could start
+          1          4           8         [3,5]           [3,8]                8  FOUND one insert place -> merge could start
           2          4           8         [3,8] vs [6 7]  [3,8]                8  while continues
           3          4           8         [3,8] vs [8 10] [3,10]               10 while ends
           4          4           9         [3,10] vs [12, 16] [3,10] [12 16]
@@ -21,6 +26,7 @@ class Solution {
         List<int[]> list = new ArrayList<>();
         int newStart = newInterval[0];
         int newEnd = newInterval[1];
+        //此boolean会在循环中起到作用以及循环结束后起作用
         boolean found = false;
         
         for (int i = 0; i < intervals.length; i++){
@@ -29,17 +35,21 @@ class Solution {
             int runningEnd = thisInterval[1];
             int[] temp = new int[2];
             /*
-            必须用found boolean来判断，作为先决条件。因为如果不加这个判断，在找到插入的地方后，每次循环到新的interval都要对比一次
-            newStart和newEnd都会被对比一次，但这步骤的对比仅仅应该发生在插入这一步
+            必须用found boolean来作为先决条件。因为如果不加这个判断，在找到插入的地方后，每次循环到新的interval都要对比一次,
+            newStart和newEnd都会被对比一次，但这步骤的对比仅仅应该发生在插入这一步。 插入后就无需再找插入了。
+            
             能使得insert valid的条件：
             1. newStart <= newEnd (不然是个invalid的)
             2. newStart <= runningEnd 这一点同理merge， 但同样还得保证 newEnd >= starting 
             例如 newInterval [2, 3] vs [4 , 4]。 如果光有newStart < runningEnd肯定是会直接进入判断，但此刻的interval并没有重合
             */
-            if (!found && newStart <= newEnd){
-                if (newStart <= runningEnd && newEnd >= starting){
+            if (!found){
+                if (newStart <= runningEnd && newEnd >= starting && newStart <= newEnd){
+                    //对于此时找到后的runningEnd 和 starting做一次新的赋值
                     runningEnd = Math.max(runningEnd, newEnd);
                     starting = Math.min(starting, newStart);
+                    //并且改写found == true， 这样下一次for循环后就不会因为被改写后的runningStart runningEnd重新找一次可以insert的
+                    //interval
                     found = true;
                 }
             }
