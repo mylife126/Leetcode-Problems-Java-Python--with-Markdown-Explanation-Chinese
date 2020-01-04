@@ -1,4 +1,14 @@
 /**
+Given the below binary tree and sum = 22,
+
+      5
+     / \
+    4   8
+   /   / \
+  11  13  4
+ /  \      \
+7    2      1
+
 类似于 backtrack，
 1. 如果遇到leaf了, leaf.left == null and leaf.right = null and tempsum == target, return true
 2. 不然我们先走left， 走到每一个subtree的left的leaf时 如果能找到直接return true 不然执行return后 执行 right

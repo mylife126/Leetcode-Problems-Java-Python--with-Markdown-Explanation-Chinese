@@ -58,8 +58,8 @@ class Solution {
          / \   \
         3  -2   1
         
-        举例，假设走到了3这个node，我们发觉 sum ==0了，直接return到node5这个节点，然后我们再往又走。但很明显我们就没法走到3 和 
-        -2了。 假设 3 和 -2 分别都改为0， 那我们就少了【两个】可能的path了。
+        举例，假设走到了3这个node，我们发觉 sum ==0了，直接return到node5这个节点，然后我们再往又走。
+        但很明显我们就没法走到3 和 -2了。 假设 3 和 -2 分别都改为0， 那我们就少了【两个】可能的path了。
         */
 //         if (sum == 0){
 //             return 1;
@@ -69,7 +69,8 @@ class Solution {
         int countRight = dfs(root.right, sum);
         /*
         所以应该是每次return到这一层的时候判断一次这一层是不是等于0了，再加上去
-        以上面的为例，我们走到了3这一层 sum ==0， 然后我们继续走到了3，发觉不行return 0回到3， 然后再去3.right =-2 发觉还是不行
+        以上面的为例，假设我们走到了3这一层 sum ==0， 然后我们继续走到了3，发觉不行return 0回到3， 
+        然后再去3.right =-2 发觉还是不行
         return了0， 走到函数尾部的return (sum == 0 ? 1 : 0) + countLeft + countRight == 1 + 0 + 0 = 1
         然后这一个1 return给了 5这一层的countleft. 再走到5.right...以此类推
         */
