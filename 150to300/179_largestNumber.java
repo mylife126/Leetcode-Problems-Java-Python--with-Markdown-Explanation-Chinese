@@ -10,9 +10,15 @@ Example 2:
 
 Input: [3,30,34,5,9]
 Output: "9534330"
+                   
+假设 a > b in the order of descending, and assume with this ordering, a + b > b + a
+                                                                      3+ 30 > 30 + 3
+反证这个结论， to prove the claim is wrong, there must be a C where b lead, and c leads c
+meaning b > c > a, thus, b + c > c + b, and with a + b > b + a implies that a + c > c + a.
 
+Thus, this is comtridictary, because in this case a must be preceding c.
 
-
+所以我们的排序只需要每两个concat一下后排列即可。
 */
 
 class Solution {
