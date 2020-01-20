@@ -36,20 +36,18 @@ re 5 to 3.l /   \ return 1 to 3.right
             / \
            7   4
            
-           
-           
+
 示例3. p = 6,  q = 2
   
-                      3  => 3.left == 5 and 3.riht == null  => return 5.
- re 5 to 3.l /                \ return null to 3.right 
-            5                  1
+                      3  => 3.left == 5 and 3.right == null  => return 5.
+ re 5 to 3.l /                 \ return null to 3.right 
+            5                   1
 re 6 to 5.l/ \re 2 to 5.r    n/   \n to 1.right
-         6   2 0     8
+         6   2               0     8
             / \
-           7   4
-          
-         
+           7   4    
  */  
+
 public class Solution {
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
         //定义left or right的出口
@@ -67,10 +65,11 @@ public class Solution {
         //case 2：当递归返回后，发觉母节点只有一个node找到了，那根据题目意思，一定存在解于这个node
         if (left == null && right != null){
             return right;
+
         } else if (left != null && right == null){
             return left;
+        //最坏情况就是null，例如走到了leaf，left.right == null leaf.left == null
         } else {
-            //最坏情况就是null，例如走到了leaf，left.right == null leaf.left == null
             return null;
         }
     }

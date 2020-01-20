@@ -16,8 +16,6 @@ twoPointer:
           那么就sPointer++
        a.2反之tPointer++
        a.3长度相同的时候 一起++   “ab”  “bb”
-
-
 */
 
 class Solution {

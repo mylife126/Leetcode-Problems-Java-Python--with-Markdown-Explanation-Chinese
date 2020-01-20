@@ -42,7 +42,7 @@ class Solution {
         dp[0] = 0;
         dp[1] = nums[0];
         
-        //3. transfer function： 要么连着前前一个屋子继续偷，要么我这一刻不偷了继承前一刻的钱
+        //3. transfer function： 要么连着前前一个屋子继续偷，要么我这一刻不偷了我继承前一刻的钱
         for (int i = 1; i < nums.length; i++){
             int thisHouseMoney = nums[i];
             int whichHouse = i + 1;
