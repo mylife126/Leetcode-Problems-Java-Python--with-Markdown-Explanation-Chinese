@@ -5,7 +5,6 @@
 然后这时候的hsh里所有的字符出现的次数都是偶数加一个最大奇数次
 '''
 
-
 class Solution(object):
     def longestPalindrome(self, s):
         """
@@ -39,4 +38,4 @@ class Solution(object):
         runningSum = 0
         for c in myHash:
             runningSum += myHash[c]
-        return runningSum
+        return runningSum   
