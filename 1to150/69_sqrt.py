@@ -55,12 +55,15 @@ class Solution:
 
 f(x) = x^1/2    => gradient = 1/2 * x^ -1/2
 
-a = x 
-error = a **2 - x
+x0 = random number
+target = x
 
-while (Error/ epislon < t):
-    a = a - lr * g
-    error = a**2 - x
+loss = x0**2 - target
+dl/dx0 = 2x0
+
+while (Error/ target < t):
+    x0 = x0 - lr * g
+    error = x0**2 - target
 
 '''
 

@@ -20,7 +20,6 @@ class Solution(object):
             else:
                 return head
             head = head.next
-            
         return None
             
         
