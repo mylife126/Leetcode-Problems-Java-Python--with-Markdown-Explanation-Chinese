@@ -89,26 +89,27 @@ Time O(NlogN) for sorting,
 Time O(NSS) for the for loop, where the second S refers to the string generation and S <= 16.
 Space O(NS)
 '''  
+from collections import defaultdict
 class Solution:
     def longestStrChain(self, words):
-        dp = {}
-        result = 1
-
-        for word in sorted(words, key=len):
+        if not words:
+            return 0
+        
+        words.sort(key = lambda x : len(x))
+        dp = defaultdict(int)
+        length = 0
+        for word in words:
             dp[word] = 1
-            print(word)
             for i in range(len(word)):
-                #word[:i]，取不到i， 而word[i + 1:]是从i + 1开始取，所以我们跳过了i这一项的char，满足了每次减少一个char
-                #来找到所有可能的pre word
-                prev = word[:i] + word[i + 1:]
-                print(prev)
-
-                if prev in dp:
-                    dp[word] = max(dp[prev] + 1, dp[word])
-                    result = max(result, dp[word])
-            print("="* 10)
-
-        return result
+                subWord = word[:i] + word[i + 1 :]
+                # print(subWord, word)
+                if subWord in dp:
+                    dp[word] = max (dp[word], dp[subWord] + 1)
+            length = max(length, dp[word] )
+        
+        return length
+            
+        
                 
                 
         

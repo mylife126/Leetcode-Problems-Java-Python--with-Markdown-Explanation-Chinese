@@ -57,6 +57,7 @@ class Solution(object):
             
         for left in range(len(s) - 1, -1, -1):
             for right in range(left + 1, len(s)):
+                
                 if s[left] == s[right]:
                     #如果头尾相等，那么肯定此刻的length有一个2了，那么再加上中间部分的所有长度即可
                     dp[left][right] = 2 + dp[left + 1][right - 1]
