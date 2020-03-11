@@ -80,6 +80,7 @@ class Solution:
             error = x0**2 - target
             # print(a)
         return x0
+        
     # def mySqrt2(self, x):
     #     smaller = False
     #     if x < 1:
